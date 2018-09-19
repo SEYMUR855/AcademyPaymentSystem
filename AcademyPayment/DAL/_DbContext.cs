@@ -37,32 +37,7 @@ namespace AcademyPayment.DAL
         /// 
         public void Initialize(_DbContext context)
         {
-            #region Exs
-            //Type derivedType = this.GetType();
-
-            //IEnumerable<PropertyInfo> dbSets = GetDbSets(derivedType);
-
-            //foreach (PropertyInfo dbSet in dbSets)
-            //{
-            //    IConnect dbSetInstance = (IConnect)Activator.CreateInstance(dbSet.GetType());
-
-
-            //    //Burada qaldig
-            //    foreach (PropertyInfo dbSetProperty in dbSet.GetType().GetProperties())
-            //    {
-            //        if (dbSetProperty.GetType() == ((IConnect)this).dbConnection.GetType())
-            //        {
-            //            dbSetInstance.dbConnection = ((IConnect)this).dbConnection;
-            //        }
-            //        else if (dbSetProperty.GetType() == ((IConnect)this).providerFactory.GetType())
-            //        {
-            //            dbSetInstance.providerFactory = ((IConnect)this).providerFactory;
-            //        }
-            //    }
-            //}
-            #endregion
             InitializeDbSets(context);
-            //Burda qaldim
         }
         private void InitializeDbSets(_DbContext derivedClass)
         {
@@ -74,9 +49,11 @@ namespace AcademyPayment.DAL
                     Type GenericDefinition = item.PropertyType.GetGenericTypeDefinition();
                     if (GenericDefinition == typeof(_DbSet<>))
                     {
+                        #region Create Generic Type
                         Type[] types = item.PropertyType.GetGenericArguments();
                         Type constructed = GenericDefinition.MakeGenericType(types);
                         object obj = Activator.CreateInstance(constructed);
+                        #endregion
                         SendProviderAndConnection(obj,constructed);
                         item.SetValue(derivedClass, obj);
                     }
